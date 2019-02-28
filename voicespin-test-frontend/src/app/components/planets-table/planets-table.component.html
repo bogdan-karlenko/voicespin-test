@@ -1,0 +1,42 @@
+<div *ngIf="planetsList; else spinner">
+  <table mat-table [dataSource]="planetsList" multiTemplateDataRows class="mat-elevation-z8">
+    <ng-container matColumnDef="{{column}}" *ngFor="let column of columnsToDisplay">
+      <th mat-header-cell *matHeaderCellDef> {{column}} </th>
+      <td mat-cell *matCellDef="let element"> {{column === 'population' ? (element[column] | numberWrapper) : element[column]}} </td>
+    </ng-container>
+
+    <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell *matCellDef="let planet" [attr.colspan]="columnsToDisplay.length">
+        <div class="vs-planet-detail d-flex justify-content-around" [@detailExpand]="planet == expandedPlanet ? 'expanded' : 'collapsed'">
+         <ul class="list-group mb-2 mt-2">
+          <li class="list-group-item list-group-item-dark text-center">Residents</li>
+           <li class="list-group-item" *ngFor="let resident of planet.residents">
+             <a [href]="resident">{{resident}}</a>
+           </li>
+         </ul>
+         <ul class="list-group mt-2 mb-2">
+           <li class="list-group-item list-group-item-dark text-center">Films</li>
+           <li class="list-group-item" *ngFor="let film of planet.films">
+            <a [href]="film">{{film}}</a>
+           </li>
+         </ul>
+        </div>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let planet; columns: columnsToDisplay;" class="vs-planet-row"
+      [class.example-expanded-row]="expandedPlanet === planet"
+      (click)="expandedPlanet = expandedPlanet === planet ? null : planet">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="vs-detail-row"></tr>
+  </table>
+</div>
+
+<ng-template #spinner>
+  <div class="container">
+  <div class="spinner"></div>
+  <h4 class="vs-loading-message">Fetching data...</h4>
+  </div>
+</ng-template>
