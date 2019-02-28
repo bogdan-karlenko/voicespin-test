@@ -1,0 +1,8 @@
+version: '3'
+services:
+  frontend:
+    build: ./voicespin-test-frontend
+    ports:
+     - "8081:80"
+  backend:
+     build: ./voicespin-test-backend
